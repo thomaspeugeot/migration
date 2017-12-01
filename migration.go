@@ -20,16 +20,16 @@ func main() {
 
 	non_ip := netgraph.Protocol{"NON_IP"}
 	ip := netgraph.Protocol{"IP"}
-	edge1_2 := netgraph.CsdEdge{&csd1,&csd2,&non_ip}
-	edge1_1bis := netgraph.CsdEdge{&csd1,&csd1bis,&ip}
-	edge1bis_net := netgraph.CsdEdge{&csd1bis,&csdNet,&ip}
-	edgeNet_2bis := netgraph.CsdEdge{&csdNet,&csd2bis,&ip}
-	edge2bis_2 := netgraph.CsdEdge{&csd2bis,&csd2,&ip}
+	edge1_2 := netgraph.Edge{&csd1,&csd2,&non_ip}
+	edge1_1bis := netgraph.Edge{&csd1,&csd1bis,&ip}
+	edge1bis_net := netgraph.Edge{&csd1bis,&csdNet,&ip}
+	edgeNet_2bis := netgraph.Edge{&csdNet,&csd2bis,&ip}
+	edge2bis_2 := netgraph.Edge{&csd2bis,&csd2,&ip}
 
-	path := [4]*netgraph.CsdEdge{&edge1_1bis,&edge1bis_net,&edgeNet_2bis,&edge2bis_2}
+	path := []*netgraph.Edge{&edge1_1bis,&edge1bis_net,&edgeNet_2bis,&edge2bis_2}
 
-	fmt.Println(edge1_2.A.Name)
-	fmt.Println(path[1].A.Name)
+	fmt.Println(edge1_2.From.Name)
+	fmt.Println(path[3].From.Name)
 
 	TT := time.Since(T)
 	fmt.Println(time.Now().Format("2006-01-02 15:04:05") + " Ready; T=" + TT.String())

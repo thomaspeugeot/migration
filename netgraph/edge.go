@@ -1,6 +1,6 @@
 package netgraph
 
-type CsdEdge struct {
-	A,B *Csd
+type Edge struct {
+	From,To *Csd
 	P *Protocol
 }
