@@ -1,7 +1,5 @@
 package netgraph
 
-type Csd struct {
+type Center struct {
 	Name string
-	Svm *Svm
 }
-

@@ -1,7 +1,6 @@
 package netgraph
 
-type Csd struct {
+type Svm struct {
 	Name string
-	Svm *Svm
+	Sv * Sv
 }
-

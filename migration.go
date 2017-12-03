@@ -12,14 +12,20 @@ func main() {
 
 	var	csd1,csd2,csd1bis,csdNet,csd2bis netgraph.Csd
 
+	non_ip := netgraph.Protocol{"NON_IP"}
+	ip := netgraph.Protocol{"IP"}
+
+	emitter := netgraph.System{"emitter"}
+	emitterv1 := netgraph.Sv{"emitterv1", & emitter, []*netgraph.Protocol{&ip, &non_ip}}
+	emitterv1_0 := netgraph.Svm{"emitterv1_0", & emitterv1}
+
 	csd1.Name = "1"
+	csd1.Svm = &emitterv1_0
 	csd2.Name = "2"
 	csd1bis.Name = "1bis"
 	csd2bis.Name = "2bis"
 	csdNet.Name = "net"
 
-	non_ip := netgraph.Protocol{"NON_IP"}
-	ip := netgraph.Protocol{"IP"}
 	edge1_2 := netgraph.Edge{&csd1,&csd2,&non_ip}
 	edge1_1bis := netgraph.Edge{&csd1,&csd1bis,&ip}
 	edge1bis_net := netgraph.Edge{&csd1bis,&csdNet,&ip}
