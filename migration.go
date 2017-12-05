@@ -1,6 +1,8 @@
 package main
 
 import (
+	"io/ioutil"
+	"encoding/json"
 	"fmt"
 	"time"
 	"github.com/thomaspeugeot/migration/netgraph"
@@ -10,7 +12,7 @@ func main() {
 	fmt.Println(time.Now().Format("2006-01-02 15:04:05") + " Start")
 	T := time.Now()
 
-	var	csd1,csd2,csd1bis,csdNet,csd2bis netgraph.Csd
+	var	nyc_emitter,paris_receiver,nyc_emitterbis,csdNet,paris_receiverbis netgraph.Csd
 
 	non_ip := netgraph.Protocol{"NON_IP"}
 	ip := netgraph.Protocol{"IP"}
@@ -19,24 +21,38 @@ func main() {
 	emitterv1 := netgraph.Sv{"emitterv1", & emitter, []*netgraph.Protocol{&ip, &non_ip}}
 	emitterv1_0 := netgraph.Svm{"emitterv1_0", & emitterv1}
 
-	csd1.Name = "1"
-	csd1.Svm = &emitterv1_0
-	csd2.Name = "2"
-	csd1bis.Name = "1bis"
-	csd2bis.Name = "2bis"
+	receiver := netgraph.System{"receiver"}
+	receiverv1 := netgraph.Sv{"receiverv1", & receiver, []*netgraph.Protocol{&ip, &non_ip}}
+	receiverv1_0 := netgraph.Svm{"receiverv1_0", & receiverv1}
+
+	nyc_emitter.Name = "1"
+	nyc_emitter.Svm = &emitterv1_0
+	
+	paris_receiver.Name = "2"
+	paris_receiver.Svm = &receiverv1_0
+
+	nyc_emitterbis.Name = "1bis"
+	paris_receiverbis.Name = "2bis"
 	csdNet.Name = "net"
 
-	edge1_2 := netgraph.Edge{&csd1,&csd2,&non_ip}
-	edge1_1bis := netgraph.Edge{&csd1,&csd1bis,&ip}
-	edge1bis_net := netgraph.Edge{&csd1bis,&csdNet,&ip}
-	edgeNet_2bis := netgraph.Edge{&csdNet,&csd2bis,&ip}
-	edge2bis_2 := netgraph.Edge{&csd2bis,&csd2,&ip}
+	edge1_2 := netgraph.Edge{&nyc_emitter,&paris_receiver,&non_ip}
+	edge1_1bis := netgraph.Edge{&nyc_emitter,&nyc_emitterbis,&ip}
+	edge1bis_net := netgraph.Edge{&nyc_emitterbis,&csdNet,&ip}
+	edgeNet_2bis := netgraph.Edge{&csdNet,&paris_receiverbis,&ip}
+	edge2bis_2 := netgraph.Edge{&paris_receiverbis,&paris_receiver,&ip}
 
 	path := []*netgraph.Edge{&edge1_1bis,&edge1bis_net,&edgeNet_2bis,&edge2bis_2}
 
 	fmt.Println(edge1_2.From.Name)
 	fmt.Println(path[3].From.Name)
 
+	mapCsd := make(map[string]netgraph.Csd)
+	mapCsd[nyc_emitter.Name] = nyc_emitter
+	mapCsd[paris_receiver.Name] = paris_receiver
+	b, _ := json.Marshal( mapCsd)
+
+	ioutil.WriteFile("/tmp/dat1", b, 0644)
+	
 	TT := time.Since(T)
 	fmt.Println(time.Now().Format("2006-01-02 15:04:05") + " Ready; T=" + TT.String())
 }
